@@ -1,0 +1,9 @@
+{% if genre_based_song_list %}
+    <ul>
+    {% for song in genre_based_song_list %}
+        <li><a href="/hap_music/{{ question.id }}/">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
