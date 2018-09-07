@@ -4,10 +4,17 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from . import models
 import json
+from rest_framework import generics
+from .serializers import SongSerializer
 
 # Create your views here.
+
+class ListSongsView(generics.ListAPIView):
+    queryset = models.Song.objects.all()
+    serializer_class = SongSerializer
+
 def index(request):
-    song_list = models.Song.objects.filter(song_name="alchemist")
+    song_list = models.Song.objects.all()
     print(song_list)
     context = {
         'song_list' : song_list,
@@ -30,7 +37,13 @@ def ret_song_on_genre(request, genre):
 
 @csrf_exempt
 def ret_song_on_artist(request, artist):
-    return(HttpResponse(models.Song.objects.filter(artist=artist)))
+    #return(HttpResponse(models.Song.objects.filter(artist=artist)))
+    result = []
+    songs = models.Song.objects.filter(artist=artist)
+
+    for song in songs:
+        result.append(song.song_name)
+    return HttpResponse(json.dumps(result))
 
 @csrf_exempt
 def ret_song_on_album(request, album):
